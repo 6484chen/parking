@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="com.tyut.dao.UserDao">
+		
+
+		<!-- 组合查询用户 -->
+		<select id="selectUser" parameterType="User" resultMap="BaseResultMap">
+			select * from user
+			<where>
+				<if test="u_id != null and u_id != ''">
+					and u_id = #{u_id}
+				</if>
+				<if test=" car_id != null and car_id != ''">
+					and car_id = #{car_id}
+				</if>
+			</where>
+		</select>
+		<resultMap type="User" id="BaseResultMap">
+			<id property="u_id" column="u_id"></id>
+			<result property="name" column="name"></result>
+			<result property="passwd" column="passwd"></result>
+			<result property="money" column="money"></result>
+			<result property="car_id" column="car_id"></result>
+		</resultMap>
+		<select id="findtUserByCarId" parameterType="Integer" resultMap="BaseResultMap">
+			select u_id,car_id from user
+			where car_id=#{car_id}
+		</select>
+		<select id="findtUserById" parameterType="Integer" resultMap="BaseResultMap">
+			select * from user
+			where u_id=#{u_id}
+		</select>
+		
+		<!-- 添加信息 -->
+		<insert id="addUser" parameterType="User" >
+			insert into user(name,passwd,money,car_id) 
+			values (#{name},#{passwd},#{money},#{car_id})
+		</insert>
+		<!-- 修改信息 -->
+		<update id="updateUser" parameterType="User">
+			update user set
+			name=#{name},passwd=#{passwd},money=#{money},car_id=#{car_id}
+			where u_id =#{u_id}
+		</update>
+		<!-- 删除信息 -->
+		<delete id="deleteUser" parameterType="Integer">
+			delete from user where u_id =#{u_id}
+		</delete>
+	</mapper>

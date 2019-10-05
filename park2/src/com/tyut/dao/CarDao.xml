@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="com.tyut.dao.CarDao">
+	
+	<!-- 组合查询用户 -->
+		<select id="selectCar" parameterType="Car" resultType="Car">
+			select * from car
+			<where>
+				<if test="c_id != null and c_id != ''">
+					and c_id = #{c_id}
+				</if>
+				<if test="car_id!= null and car_id != ''">
+					and car_id= #{car_id}  
+				</if>
+				<if test="in_time!= null and in_time != ''">
+					and in_time= #{in_time}  
+				</if>
+				<if test="stop_id!= null and stop_id != ''">
+					and stop_id= #{stop_id}  
+				</if>
+			</where>
+		</select>
+		
+		<!-- 添加信息 -->
+		<insert id="addCar" parameterType="Car" >
+			insert into car(car_id,in_time,out_time,stop_id) 
+			values (#{car_id},#{in_time},#{out_time},#{stop_id})
+		</insert>
+		<!-- 修改信息 -->
+		<update id="updateCar" parameterType="Car">
+			update car set
+			in_time=#{in_time},out_time=#{out_time}
+			where car_id =#{car_id}
+		</update>
+		
+		<!-- 删除信息 -->
+		<delete id="deleteCar" parameterType="Integer">
+			delete from car where car_id =#{car_id}
+		</delete>
+	</mapper>

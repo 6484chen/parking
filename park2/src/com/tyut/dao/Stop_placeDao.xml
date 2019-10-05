@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+	<mapper namespace="com.tyut.dao.Stop_placeDao">
+	
+	<resultMap type="Stop_place" id="BaseResultMap">
+		<id property="s_id" column="s_id"></id>
+		<result property="stop_id" column="stop_id"></result>
+		<result property="status" column="status"></result>
+	</resultMap>
+	
+		<update id="updateStop_place" parameterType="Stop_place">
+			update stop_place set
+			status = #{status},stop_id = #{stop_id}
+			where stop_id = #{stop_id}
+		</update>
+		
+		<select id="findStop_placeByStop_id" parameterType="String" resultType="Stop_place">
+			select stop_id，status from stop_place 
+					where stop_id = #{stop_id}	
+		</select>
+		<select id="findStop_place" parameterType="Stop_place" resultMap="BaseResultMap">
+			select * from stop_place 
+			<where>
+				<if test="s_id != null and s_id != ''">
+					and s_id = #{s_id}	
+				</if>
+				<if test="stop_id != null and stop_id != ''">
+					and stop_id = #{stop_id}
+				</if>
+				<if test="status!= null and status != ''">
+					and status = #{status}	
+				</if>
+			</where>
+		</select>
+		
+		<insert id="addStop_place" parameterType="Stop_place">
+			insert into stop_place(stop_id,status) 
+			values (#{stop_id},#{status})
+		</insert>
+	</mapper>

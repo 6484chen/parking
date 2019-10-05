@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+						http://www.springframework.org/schema/aop
+						http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+						http://www.springframework.org/schema/context
+						http://www.springframework.org/schema/context/spring-context-4.3.xsd
+						http://www.springframework.org/schema/tx
+						http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+<!-- 读取db.properties -->
+<context:property-placeholder location="classpath:db.properties" />
+
+<!-- 1.配置驱动 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">	
+		<property name="driverClassName" value="${jdbc.driver}"></property>	
+		<property name="url" value="${jdbc.url}"></property>
+		<property name="username" value="${jdbc.username}"></property>
+		<property name="password" value="${jdbc.password}"></property>		
+		<property name="maxTotal" value="${jdbc.maxTotal}"></property>		
+		<property name="maxIdle" value="${jdbc.maxIdle}"></property>		
+		<property name="initialSize" value="${jdbc.initialSize}"></property>		
+	</bean>
+<!--2. 事务管理器，依赖于数据源 -->
+	<bean	id="transactionManager" 
+	class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+<!-- 开启事务注解 --><!-- 编写通知：对事物进行增强通知，需要编写对切入点和具体执行事务细节 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+<!-- Spring IoC初始化id时，将数据源保存到Spring Bean中 -->
+<!-- 配置MyBatis工厂 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" >
+		<!-- 注入数据源 -->
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- 加载指定核心配置文件 -->
+		<property name="configLocation" value="classpath:mybatis-config.xml"></property>
+	</bean>
+
+
+
+	
+<!-- 代替   实例化Dao和实现类Dao层的类 -->	
+<!-- Mapper代理开发(基于MapperScannerConfigurer开发) 通过扫描包-->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.tyut.dao"></property>
+	</bean>
+
+	
+<!-- 开启扫描Service -->
+	<context:component-scan base-package="com.tyut.service"></context:component-scan>
+	
+</beans>
